@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { AiOutlineGithub } from "react-icons/ai";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -34,6 +35,14 @@ export default function Navbar() {
 
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
+        <Link
+          href="https://github.com/slicycode/Promptify"
+          className="mr-4 hover:text-gray-700 group relative"
+          target="_blank"
+        >
+          <AiOutlineGithub size={37} />
+          <span className="tooltip top-10 -left-[18px]">Repository</span>
+        </Link>
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-prompt" className="black_btn">
@@ -77,6 +86,14 @@ export default function Navbar() {
 
       {/* Mobile Navigation */}
       <div className="sm:hidden flex relative">
+        <Link
+          href="https://github.com/slicycode/Promptify"
+          className="mr-4 hover:text-gray-700 relative group"
+          target="_blank"
+        >
+          <AiOutlineGithub size={37} />
+          <span className="tooltip top-10 -left-[18px]">Repository</span>
+        </Link>
         {session?.user ? (
           <div className="flex">
             <Image
@@ -102,7 +119,7 @@ export default function Navbar() {
                   className="dropdown_link"
                   onClick={() => setToggleDropdown(false)}
                 >
-                  Create Prompt
+                  Create
                 </Link>
                 <button
                   type="button"
