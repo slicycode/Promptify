@@ -14,7 +14,7 @@ export default function PromptCard({
   handleEdit,
   handleDelete,
   searchText,
-}: PromptCardProps & { searchText: string }) {
+}: PromptCardProps) {
   const { data: session } = useSession() as any;
   const pathName = usePathname();
   const router = useRouter();
@@ -67,13 +67,19 @@ export default function PromptCard({
             <h3
               className="font-satoshi font-semibold text-gray-900"
               dangerouslySetInnerHTML={{
-                __html: highlightSearchTerm(post.creator.username, searchText),
+                __html: highlightSearchTerm(
+                  post.creator.username,
+                  searchText as string
+                ),
               }}
             ></h3>
             <p
               className="font-inter text-sm text-gray-500"
               dangerouslySetInnerHTML={{
-                __html: highlightSearchTerm(post.creator.email, searchText),
+                __html: highlightSearchTerm(
+                  post.creator.email,
+                  searchText as string
+                ),
               }}
             ></p>
           </div>
@@ -99,7 +105,7 @@ export default function PromptCard({
       <p
         className="my-4 font-satoshi text-sm text-gray-700"
         dangerouslySetInnerHTML={{
-          __html: highlightSearchTerm(post.prompt, searchText),
+          __html: highlightSearchTerm(post.prompt, searchText as string),
         }}
       ></p>
       <p className="font-inter text-sm blue_gradient">

@@ -5,4 +5,5 @@ export type PromptCardProps = {
   handleTagClick?: (tag: string) => void;
   handleEdit?: (post: PostProps) => void;
   handleDelete?: (post: PostProps) => void;
+  searchText?: string;
 };
