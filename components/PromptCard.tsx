@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
+import DOMPurify from "dompurify";
 
 import type { PromptCardProps } from "@/types/PromptCardProps";
 
@@ -12,7 +13,8 @@ export default function PromptCard({
   handleTagClick,
   handleEdit,
   handleDelete,
-}: PromptCardProps) {
+  searchText,
+}: PromptCardProps & { searchText: string }) {
   const { data: session } = useSession() as any;
   const pathName = usePathname();
   const router = useRouter();
@@ -26,17 +28,35 @@ export default function PromptCard({
     }, 3000);
   };
 
+  const highlightSearchTerm = (text: string, searchTerm: string) => {
+    if (!searchTerm) return text;
+
+    const regex = new RegExp(searchTerm, "gi");
+    const highlightedText = text.replace(
+      regex,
+      (match) => `<mark class="highlight">${match}</mark>`
+    );
+
+    return DOMPurify.sanitize(highlightedText);
+  };
+
+  const handleProfileClick = () => {
+    if (post.creator._id === session?.user.id) return router.push("/profile");
+
+    router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
+  };
+
+  const tags = post.tags.split(" ");
+
   return (
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">
         <div
           className="flex-1 flex justify-start items-center gap-3 cursor-pointer"
-          onClick={() =>
-            session?.user.id === post?.creator._id && router.push("/profile")
-          }
+          onClick={handleProfileClick}
         >
           <Image
-            src={post?.creator.image}
+            src={post.creator.image}
             alt="user_image"
             width={40}
             height={40}
@@ -44,27 +64,29 @@ export default function PromptCard({
           />
 
           <div className="flex flex-col">
-            <h3 className="font-satoshi font-semibold text-gray-900">
-              {post?.creator.username !== "jules"
-                ? post?.creator.username
-                : "slycode"}
-            </h3>
-            <p className="font-inter text-sm text-gray-500">
-              {post?.creator.email !== "deparisjules180@gmail.com"
-                ? post?.creator.email
-                : "slycode@slycode.com"}
-            </p>
+            <h3
+              className="font-satoshi font-semibold text-gray-900"
+              dangerouslySetInnerHTML={{
+                __html: highlightSearchTerm(post.creator.username, searchText),
+              }}
+            ></h3>
+            <p
+              className="font-inter text-sm text-gray-500"
+              dangerouslySetInnerHTML={{
+                __html: highlightSearchTerm(post.creator.email, searchText),
+              }}
+            ></p>
           </div>
         </div>
 
         <div className="copy_btn group relative" onClick={handleCopy}>
           <Image
             src={
-              copied === post?.prompt
+              copied === post.prompt
                 ? "/assets/icons/tick.svg"
                 : "/assets/icons/copy.svg"
             }
-            alt="Copy Icon"
+            alt={copied === post.prompt ? "tick_icon" : "copy_icon"}
             width={12}
             height={12}
           />
@@ -73,17 +95,26 @@ export default function PromptCard({
           </span>
         </div>
       </div>
-      <p className="my-4 font-satoshi text-sm text-gray-700">{post?.prompt}</p>
+
       <p
-        className="font-inter text-sm blue_gradient cursor-pointer w-fit"
-        onClick={() => handleTagClick && handleTagClick(post?.tags)}
-      >
-        {post?.tags?.split(" ").map((tag, index) => (
-          <span key={index}>#{tag} </span>
+        className="my-4 font-satoshi text-sm text-gray-700"
+        dangerouslySetInnerHTML={{
+          __html: highlightSearchTerm(post.prompt, searchText),
+        }}
+      ></p>
+      <p className="font-inter text-sm blue_gradient">
+        {tags.map((tag, index) => (
+          <span
+            key={index}
+            className="mr-2 cursor-pointer"
+            onClick={() => handleTagClick && handleTagClick(tag)}
+          >
+            #{tag}
+          </span>
         ))}
       </p>
 
-      {session?.user.id === post?.creator._id && pathName === "/profile" && (
+      {session?.user.id === post.creator._id && pathName === "/profile" && (
         <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
           <p
             className="font-inter text-sm green_gradient cursor-pointer"

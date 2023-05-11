@@ -1,3 +1,4 @@
+import Link from "next/link";
 import PromptCard from "./PromptCard";
 import { ProfileProps } from "@/types/ProfileProps";
 
@@ -25,6 +26,15 @@ export default function Profile({
           />
         ))}
       </div>
+
+      {data.length === 0 && (
+        <p>
+          You haven't created any prompts yet.{" "}
+          <Link href="/create-prompt" className="blue_gradient">
+            Create one now!
+          </Link>
+        </p>
+      )}
     </section>
   );
 }

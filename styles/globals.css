@@ -121,10 +121,16 @@ html {
   }
 }
 
+.highlight {
+  @apply bg-amber-500 text-[#1f2937];
+}
+
+/* Create Post form border animation */
+
 .form_gradient {
   --angle: 0deg;
   border: 1px solid;
-  border-image: linear-gradient(var(--angle), #eff0f3, #d7d8db) 1;
+  border-image: linear-gradient(var(--angle), #ebebeb, #aea3cc9d) 1;
   animation: 5s rotate linear infinite;
 }
 
@@ -174,7 +180,7 @@ html {
 }
 
 .search_input {
-  @apply block w-full rounded-md border border-gray-200 bg-white py-2.5 font-satoshi pl-5 pr-12 text-sm shadow-lg font-medium focus:border-black focus:outline-none focus:ring-0;
+  @apply block w-full rounded-md border border-gray-200 bg-white py-2.5 font-satoshi pl-5 pr-12 text-sm shadow-lg font-medium transition duration-100 ease-in-out focus:border-neutral-500 focus:outline-none focus:ring-0;
 }
 
 .copy_btn {
@@ -182,7 +188,7 @@ html {
 }
 
 .glassmorphism {
-  @apply rounded-xl bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-5;
+  @apply bg-white/10 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-5;
 }
 
 .prompt_layout {
