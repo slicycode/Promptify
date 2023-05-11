@@ -1,7 +1,8 @@
 import "@styles/globals.css";
 
 import Navbar from "@components/Navbar";
-import Provider from "@components/Provider";
+import { ToasterContext } from "./context/ToasterContext";
+import AuthContext from "./context/AuthContext";
 
 export const metadata = {
   title: "Promptify",
@@ -19,7 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Provider>
+        <AuthContext>
+          <ToasterContext />
           <div className="main">
             <div className="gradient"></div>
           </div>
@@ -27,7 +29,7 @@ export default function RootLayout({
             <Navbar />
             {children}
           </main>
-        </Provider>
+        </AuthContext>
       </body>
     </html>
   );

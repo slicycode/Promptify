@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
 
 import type { PromptCardListProps } from "@/types/PromptCardListProps";
+import type { PostProps } from "@/types/PostProps";
+
+type ItemPostProps = Omit<PostProps, "_id">;
 
 const PromptCardList = ({
   data,
@@ -25,31 +28,25 @@ const PromptCardList = ({
 };
 
 export default function Feed() {
-  const [allPosts, setAllPosts] = useState([]);
-
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [searchedResults, setSearchedResults] = useState([]);
-
-  const fetchPosts = async () => {
-    const response = await fetch("/api/prompt");
-    const data = await response.json();
-
-    setAllPosts(data);
-  };
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
+    const fetchPosts = async () => {
+      const res = await fetch("/api/prompt");
+      const data = await res.json();
+      setPosts(data);
+    };
+
     fetchPosts();
   }, []);
 
   const filterPrompts = (searchtext: string) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
-    return allPosts.filter(
-      (item: {
-        creator: { username: string; email: string };
-        tags: string;
-        prompt: string;
-      }) =>
+    return posts.filter(
+      (item: ItemPostProps) =>
         regex.test(item.creator.username) ||
         regex.test(item.creator.email) ||
         regex.test(item.tags) ||
@@ -91,12 +88,12 @@ export default function Feed() {
 
       {searchText ? (
         <PromptCardList
-          data={searchText ? searchedResults : allPosts}
+          data={searchText ? searchedResults : posts}
           handleTagClick={handleTagClick}
           searchText={searchText}
         />
       ) : (
-        <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
+        <PromptCardList data={posts} handleTagClick={handleTagClick} />
       )}
     </section>
   );

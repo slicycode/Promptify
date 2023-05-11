@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import Form from "@components/Form";
+import { toast } from "react-hot-toast";
 
 export default function CreatePrompt() {
   const { data: session } = useSession() as any;
@@ -32,8 +33,9 @@ export default function CreatePrompt() {
         router.push("/");
       }
     } catch (error) {
-      console.error(error);
+      toast.error("Something went wrong");
     } finally {
+      toast.success("Prompt created successfully");
       setSubmitting(false);
     }
   };

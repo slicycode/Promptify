@@ -114,8 +114,8 @@ export default function Form({
 
           <button
             type="submit"
-            disabled={submitting}
-            className="px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white"
+            disabled={submitting || !post.prompt || !post.tags}
+            className="px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white disabled:opacity-50"
           >
             {submitting ? `${type}...` : type}
           </button>

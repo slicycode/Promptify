@@ -1,24 +1,32 @@
 "use client";
+
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { useState } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { AiOutlineGithub } from "react-icons/ai";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
-  const { data: session } = useSession();
-  const [providers, setProviders] = useState(null);
+  const { data: session, status } = useSession();
   const [toggleDropdown, setToggleDropdown] = useState(false);
+  const router = useRouter();
 
-  useEffect(() => {
-    const setUpProviders = async () => {
-      const response: any = await getProviders();
-      setProviders(response);
-    };
+  const socialAction = (action: string) => {
+    signIn(action, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error("Invalid credentials!");
+        }
 
-    setUpProviders();
-  }, []);
+        if (callback?.ok) {
+          router.push("/");
+        }
+      })
+      .finally(() => setToggleDropdown(false));
+  };
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
@@ -51,7 +59,7 @@ export default function Navbar() {
 
             <button
               type="button"
-              onClick={signOut as any}
+              onClick={() => signOut()}
               className="outline_btn"
             >
               Sign Out
@@ -67,20 +75,24 @@ export default function Navbar() {
               />
             </Link>
           </div>
+        ) : status === "loading" ? (
+          <div className="px-7 py-1.5">
+            <Image
+              src="/assets/icons/loader.svg"
+              width={24}
+              height={24}
+              alt="loader"
+              className="object-contain"
+            />
+          </div>
         ) : (
-          <>
-            {providers &&
-              Object.values(providers).map((provider: any) => (
-                <button
-                  type="button"
-                  key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                  className="black_btn"
-                >
-                  Sign In
-                </button>
-              ))}
-          </>
+          <button
+            type="button"
+            onClick={() => socialAction("google")}
+            className="black_btn"
+          >
+            Sign In
+          </button>
         )}
       </div>
 
@@ -134,20 +146,24 @@ export default function Navbar() {
               </div>
             )}
           </div>
+        ) : status === "loading" ? (
+          <div className="px-7 py-1.5">
+            <Image
+              src="/assets/icons/loader.svg"
+              width={24}
+              height={24}
+              alt="loader"
+              className="object-contain"
+            />
+          </div>
         ) : (
-          <>
-            {providers &&
-              Object.values(providers).map((provider: any) => (
-                <button
-                  type="button"
-                  key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                  className="black_btn"
-                >
-                  Sign In
-                </button>
-              ))}
-          </>
+          <button
+            type="button"
+            onClick={() => socialAction("google")}
+            className="black_btn"
+          >
+            Sign In
+          </button>
         )}
       </div>
     </nav>

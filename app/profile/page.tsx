@@ -6,22 +6,34 @@ import { useSession } from "next-auth/react";
 import Profile from "@/components/Profile";
 import { useRouter } from "next/navigation";
 import { PostProps } from "@/types/PostProps";
+import { toast } from "react-hot-toast";
 
 export default function MyProfile() {
-  const { data: session } = useSession() as any;
+  const { data: session, status } = useSession() as any;
   const router = useRouter();
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      const res = await fetch(`/api/users/${session?.user.id}/posts`);
-      const data = await res.json();
+    const getPosts = async () => {
+      try {
+        const res = await fetch(`/api/users/${session.user.id}/posts`);
+        const data = await res.json();
 
-      setPosts(data);
+        setPosts(data);
+      } catch (error) {
+        toast.error("Something went wrong");
+      }
     };
 
-    if (session?.user.id) fetchPosts();
-  }, []);
+    if (status === "authenticated") {
+      getPosts();
+    }
+
+    if (status === "unauthenticated") {
+      toast.error("Logged out, redirecting to home page");
+      router.push("/");
+    }
+  }, [session, status]);
 
   const handleEdit = async (post: PostProps) => {
     router.push(`/update-prompt?id=${post._id}`);
@@ -43,8 +55,9 @@ export default function MyProfile() {
         );
 
         setPosts(filteredPosts);
+        toast.success("Prompt deleted successfully");
       } catch (error) {
-        console.log(error);
+        toast.error("Something went wrong");
       }
     }
   };
