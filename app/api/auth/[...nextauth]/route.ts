@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { connectToDatabase } from "@utils/database";
 import User from "@models/user";
 
-export const authOptions: AuthOptions = {
+const handler = NextAuth({
   providers: [
     // GithubProvider({
     //   clientId: process.env.GITHUB_ID as string,
@@ -14,8 +14,8 @@ export const authOptions: AuthOptions = {
     //   clientSecret: process.env.GITHUB_SECRET as string,
     // }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
   callbacks: {
@@ -48,8 +48,6 @@ export const authOptions: AuthOptions = {
     },
   },
   debug: process.env.NODE_ENV === "development",
-};
-
-const handler = NextAuth(authOptions);
+});
 
 export { handler as GET, handler as POST };
