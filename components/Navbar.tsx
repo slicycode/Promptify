@@ -67,7 +67,7 @@ export default function Navbar() {
 
             <Link href="/profile">
               <Image
-                src={session?.user.image as string}
+                src={session?.user?.image as string}
                 width={37}
                 height={37}
                 alt="Profile"
@@ -109,7 +109,7 @@ export default function Navbar() {
         {session?.user ? (
           <div className="flex">
             <Image
-              src={session?.user.image as string}
+              src={session?.user?.image as string}
               width={37}
               height={37}
               alt="Profile"
